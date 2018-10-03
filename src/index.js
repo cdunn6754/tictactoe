@@ -10,6 +10,14 @@ function Square(props){
   )
 }
 
+function ListToggle(props) {
+  return(
+    <button className="toggle-switch" onClick={props.onClick}>
+     {props.value}
+    </button>
+  )
+}
+
 class Board extends React.Component {
   
   renderSquare(i) {
@@ -58,6 +66,7 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext: true,
+      listInverted: false,
     };
   }
     
@@ -96,7 +105,8 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner =calculateWinner(current.squares);
-    const currentStepNumber = this.state.stepNumber
+    const currentStepNumber = this.state.stepNumber;
+    const listInverted = this.state.listInverted;
     
     const moves = history.map((step, move) => {
       const desc = move ?
@@ -126,6 +136,10 @@ class Game extends React.Component {
       );
     });
     
+    if (listInverted) {
+      moves.reverse()
+    }
+    
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
@@ -133,7 +147,10 @@ class Game extends React.Component {
       status = 'Current player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
   
-    
+    const toggleText = listInverted ?
+      "Reset List" :
+      "Invert List";
+      
     return (
       <div className="game">
         <div className="game-board">
@@ -146,6 +163,18 @@ class Game extends React.Component {
           <div>{status}</div>
           <ol>{moves}</ol>
         </div>
+        <div className="toggle-container">
+          <div>
+            <ListToggle 
+              value = {toggleText}
+              onClick = {() => {this.setState({
+                listInverted: !listInverted,
+                })
+              }}
+            />
+          </div>
+        </div>
+        
       </div>
     );
   }
