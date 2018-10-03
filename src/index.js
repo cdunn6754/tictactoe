@@ -108,8 +108,8 @@ class Game extends React.Component {
         '';
         
       const playerTurn = move ?
-        '' :
-        '; Player ' + step.playerTurn;
+        '; Player ' + step.playerTurn :
+        '';
         
       const styleClass = (move === currentStepNumber) ?
         'history-indicator' :
