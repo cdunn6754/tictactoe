@@ -21,23 +21,26 @@ class Board extends React.Component {
   }
 
   render() {
-    return (
+    const counter = [0,1,2];
+    
+    const board = counter.map((count) => {
+      const outerCount = count;
+      
+      const boardRow = counter.map((count) => {
+        return this.renderSquare(count + 3*outerCount);
+      });
+    
+      return (
+        <div className="board-row">
+          {boardRow}
+        </div>
+      )
+      
+    });
+    
+    return ( 
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {board}
       </div>
     );
   }
@@ -111,9 +114,7 @@ class Game extends React.Component {
       const styleClass = (move === currentStepNumber) ?
         'history-indicator' :
         null;
-        
-      
-        
+            
       return (
         <li key={move}>
           <button  
