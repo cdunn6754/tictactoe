@@ -2,19 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-// class Square extends React.Component {
-// 
-//   render() {
-//     return (
-//       <button 
-//         className="square" 
-//         onClick={() => this.props.onClick() }>
-//         {this.props.value}
-//       </button>
-//     );
-//   }
-// }
-
 function Square(props){
   return (
     <button className="square" onClick={props.onClick}>
@@ -22,8 +9,6 @@ function Square(props){
     </button>
   )
 }
-
-
 
 class Board extends React.Component {
   
@@ -65,14 +50,15 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        moveLocation: null,
+        playerTurn: 'X'
       }],
       stepNumber: 0,
       xIsNext: true,
     };
   }
-  
-  
-  handleClick(i){
+    
+  handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
@@ -80,10 +66,15 @@ class Game extends React.Component {
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    
+    const symbol = this.state.xIsNext ? 'X' : 'O';
+    squares[i] = symbol;
+    
     this.setState({
       history: history.concat([{
           squares: squares,
+          moveLocation: findCoordinates(i),
+          playerTurn: symbol,
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -107,9 +98,20 @@ class Game extends React.Component {
       const desc = move ?
         'Go to move #' + move :
         'Go to game start';
+        
+      const location = step.moveLocation ?
+        'at ' + step.moveLocation :
+        '';
+        
+      const playerTurn = move ?
+        '' :
+        '; Player ' + step.playerTurn;
+        
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button onClick={() => this.jumpTo(move)}>
+            {desc} {playerTurn} {location}
+          </button>
         </li>
       );
     });
@@ -118,7 +120,7 @@ class Game extends React.Component {
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
-      status = 'Current player: ' + this.state.xIsNext ? 'X' : 'O';
+      status = 'Current player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
   
     
@@ -139,6 +141,22 @@ class Game extends React.Component {
   }
 }
 
+function findCoordinates(i) {
+
+  const coordinates = {
+    0 : "(0,0)",
+    1 : "(1,0)",
+    2 : "(2,0)",
+    3 : "(0,1)",
+    4 : "(1,1)",
+    5 : "(2,1)",
+    6 : "(0,2)",
+    7 : "(1,2)",
+    8 : "(2,2)",    
+  }
+  
+  return coordinates[i]
+}
 
 function calculateWinner(squares) {
   const lines = [
