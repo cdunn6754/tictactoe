@@ -48,3 +48,7 @@ ol, ul {
 .game-info {
   margin-left: 20px;
 }
+
+.history-indicator {
+  border: 2px solid red;
+}
