@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import HistoryList from './history-list.js';
 import './index.css';
 
 function Square(props){
@@ -11,12 +12,19 @@ function Square(props){
 }
 
 function ListToggle(props) {
+
+  const toggleText = props.listInverted ?
+    "Reset List" :
+    "Invert List";
+
   return(
     <button className="toggle-switch" onClick={props.onClick}>
-     {props.value}
+     {toggleText}
     </button>
   )
 }
+
+
 
 class Board extends React.Component {
   
@@ -53,6 +61,7 @@ class Board extends React.Component {
     );
   }
 }
+
 
 class Game extends React.Component {
   
@@ -93,7 +102,7 @@ class Game extends React.Component {
     });
   }
   
-  jumpTo(step) {
+  handleHistoryClick(step) {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
@@ -107,49 +116,13 @@ class Game extends React.Component {
     const winner =calculateWinner(current.squares);
     const currentStepNumber = this.state.stepNumber;
     const listInverted = this.state.listInverted;
-    
-    const moves = history.map((step, move) => {
-      const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
-        
-      const location = step.moveLocation ?
-        'at ' + step.moveLocation :
-        '';
-        
-      const playerTurn = move ?
-        '; Player ' + step.playerTurn :
-        '';
-        
-      const styleClass = (move === currentStepNumber) ?
-        'history-indicator' :
-        null;
-            
-      return (
-        <li key={move}>
-          <button  
-            className={styleClass}
-            onClick={() => this.jumpTo(move)}>
-              {desc} {playerTurn} {location}
-          </button>
-        </li>
-      );
-    });
-    
-    if (listInverted) {
-      moves.reverse()
-    }
-    
+      
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
       status = 'Current player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
-  
-    const toggleText = listInverted ?
-      "Reset List" :
-      "Invert List";
       
     return (
       <div className="game">
@@ -161,12 +134,19 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <ol>
+            <HistoryList
+              history = {history}
+              currentStepNumber = {currentStepNumber}
+              listInverted = {this.state.listInverted}
+              onHistoryClick = {(i) => this.handleHistoryClick(i)}
+            />
+          </ol>
         </div>
         <div className="toggle-container">
           <div>
             <ListToggle 
-              value = {toggleText}
+              listInverted = {listInverted}
               onClick = {() => {this.setState({
                 listInverted: !listInverted,
                 })
