@@ -42,6 +42,7 @@ class Board extends React.Component {
       
     return (
       <Square 
+        key={i}
         value={this.props.squares[i]}
         winnerSquare = {winnerSquare}
         onClick={() => this.props.onClick(i)}
@@ -60,7 +61,7 @@ class Board extends React.Component {
       });
     
       return (
-        <div className="board-row">
+        <div key={outerCount} className="board-row">
           {boardRow}
         </div>
       )
