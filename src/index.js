@@ -89,6 +89,7 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true,
       listInverted: false,
+      noWinner: false,
     };
   }
     
@@ -96,8 +97,10 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+    const winner = calculateWinner(squares)[0]
+    const noWinner = checkNoWinner(squares);
     
-    if (calculateWinner(squares)[0] || squares[i]) {
+    if (winner || squares[i] || noWinner) {
       return;
     }
     
@@ -131,10 +134,15 @@ class Game extends React.Component {
     const winners = winnerResults[1];
     const currentStepNumber = this.state.stepNumber;
     const listInverted = this.state.listInverted;
+    
+    const noWinner = checkNoWinner(current.squares);
+    
       
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
+    } else if (noWinner){
+      status = 'Draw, game over:'
     } else {
       status = 'Current player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -211,6 +219,12 @@ function calculateWinner(squares) {
     }
   }
   return [null, null];
+}
+
+function checkNoWinner(squares) {
+  return ( ! squares.includes(null)) ?
+    true :
+    false;
 }
 
 // ========================================
